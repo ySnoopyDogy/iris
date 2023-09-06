@@ -1,4 +1,5 @@
 import { open, close, data, SocketData } from './listeners';
+import { startPolling } from './telegram/updates';
 
 const PORT = 42069;
 
@@ -9,3 +10,5 @@ Bun.listen<SocketData>({
 }).ref();
 
 console.log(`Listening to TCP on ${PORT}`);
+
+startPolling();
