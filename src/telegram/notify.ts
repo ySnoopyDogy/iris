@@ -24,7 +24,17 @@ const sendAlert = async (notification: Notification) => {
   await telegramRequest('sendMessage', body);
 };
 
-const answerAcknowledge = async (messageId: string, chatId: string) => {
+const sendMessage = async (text: string) => {
+  const body = {
+    chat_id: `${Bun.env.CHAT_ID}`,
+    text: text,
+    parse_mode: 'MarkdownV2',
+  };
+
+  await telegramRequest('sendMessage', body);
+};
+
+const answerAcknowledge = async (messageId: number, chatId: number) => {
   telegramRequest('editMessageText', {
     text: 'O evento foi coisado',
     message_id: messageId,
@@ -33,4 +43,4 @@ const answerAcknowledge = async (messageId: string, chatId: string) => {
   });
 };
 
-export { sendAlert, answerAcknowledge };
+export { sendAlert, answerAcknowledge, sendMessage };

@@ -1,9 +1,11 @@
+import { Update } from '@grammyjs/types';
 import { telegramRequest } from '.';
-import { answerAcknowledge, sendAlert } from './notify';
+import { answerAcknowledge } from './notify';
+import { parseCommand } from './parseCommand';
 
 let offset = 0;
 const timeout = 60;
-const limit = 1;
+const limit = 100;
 const allowed_updates = ['message', 'callback_query'];
 
 const startPolling = async (): Promise<void> => {
@@ -13,21 +15,22 @@ const startPolling = async (): Promise<void> => {
 
   const parsed = await response.json();
 
-  if (parsed.result.length === 0) return startPolling();
+  const updates = parsed.result;
 
-  const [event] = parsed.result;
+  if (updates.length === 0) return startPolling();
 
-  offset = event.update_id + 1;
+  updates.forEach((event: Update) => {
+    offset = event.update_id + 1;
 
-  if (event.callback_query)
-    answerAcknowledge(
-      event.callback_query.message.message_id,
-      event.callback_query.message.chat.id,
-    );
+    if (event.callback_query)
+      return answerAcknowledge(
+        event.callback_query.message!.message_id,
+        event.callback_query.message!.chat.id,
+      );
 
-  if (event.message) {
-    sendAlert({ text: 'ALERTA UWU' });
-  }
+    if (!event.message) return;
+    parseCommand(event.message);
+  });
 
   startPolling();
 };

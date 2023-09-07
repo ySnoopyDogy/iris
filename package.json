@@ -3,6 +3,7 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
+    "@grammyjs/types": "^3.2.0",
     "bun-types": "latest"
   },
   "peerDependencies": {
